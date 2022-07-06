@@ -2,6 +2,13 @@ const router = require("express").Router();
 const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoint
+const {
+  getAllTags,
+  getTag,
+  createTag,
+  updateTag,
+  deleteTag,
+} = require("../../controllers/tag-routes");
 
 router.get("/", getAllTags);
 

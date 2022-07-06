@@ -2,6 +2,13 @@ const router = require("express").Router();
 const { Product, Category, Tag, ProductTag } = require("../../models");
 
 // The `/api/products` endpoint
+const {
+  getAllProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = require("../../controllers/product-routes");
 
 // get all products
 router.get("/", getAllProducts);
