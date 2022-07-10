@@ -2,19 +2,25 @@ const router = require("express").Router();
 const { Product, Category, Tag, ProductTag } = require("../../models");
 
 // The `/api/products` endpoint
+
+// get all products
 router.get("/", async (req, res) => {
   // find all products
   try {
-    const products = await Product.findAll({
+    const allProducts = await Product.findAll({
       include: [{ model: Category }, { model: Tag }],
     });
-    if (!products) {
-      return res.status(500).json({ message: "Products not found" });
+
+    if (!allProducts) {
+      return res.status(404).json({
+        error: "There are no products right now",
+      });
     }
-    return res.json(products);
+    return res.status(200).json(allProducts);
   } catch (error) {
-    console.error(`ERROR | ${error.message}`);
-    return res.status(500).json(error);
+    return res.status(500).json({
+      error: "Sorry, could not get products. Please try again later.",
+    });
   }
 });
 
@@ -27,12 +33,15 @@ router.get("/:id", async (req, res) => {
       include: [{ model: Category }, { model: Tag }],
     });
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res
+        .status(404)
+        .json({ message: "Product has not been found with this id" });
     }
-    return res.json(product);
+    return res.status(200).json(product);
   } catch (error) {
-    console.error(`ERROR | ${error.message}`);
-    return res.status(500).json(error);
+    return res
+      .status(500)
+      .json({ error: "Sorry, we could not get product info." });
   }
 });
 
@@ -117,14 +126,17 @@ router.delete("/:id", async (req, res) => {
     const product = await Product.findByPk(id);
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({
+        message: "Product does not exist",
+      });
     }
 
     await Product.destroy({ where: { id } });
-    return res.status(200).json({ message: "Product deleted" });
+    return res.status(200).json({ message: "Product is now deleted" });
   } catch (error) {
-    console.error(`ERROR | ${error.message}`);
-    return res.status(500).json(error);
+    return res.status(500).json({
+      error: "Sorry, unable to delete the product. Please try again later.",
+    });
   }
 });
 
